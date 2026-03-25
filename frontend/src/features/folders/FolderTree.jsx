@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { ChevronRight, ChevronDown, Folder as FolderIcon, FolderOpen, Plus } from 'lucide-react';
+import { Button } from '../../components/ui';
 
 /**
  * FolderTree — Recursive Component

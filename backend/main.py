@@ -1,10 +1,10 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .database import engine, Base
-from .api import auth, folders, files, analytics, admin
-from . import models
-from .services.scheduler import start_scheduler
+from database import engine, Base
+from api import auth, folders, files, analytics, admin
+import models
+from services.scheduler import start_scheduler
 
 # Create tables if they don't exist (in a real prod app, use Alembic)
 models.Base.metadata.create_all(bind=engine)

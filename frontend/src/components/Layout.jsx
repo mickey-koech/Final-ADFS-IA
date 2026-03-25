@@ -1,5 +1,6 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { LogOut, FolderOpen, BarChart2, Users, Bell, Database } from 'lucide-react';
+import { Button } from './ui';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
@@ -27,7 +28,7 @@ export default function Layout({ setAuth }) {
   ];
 
   if (user?.role === 'Admin') {
-    navItems.push({ name: 'Admin Center', path: '/admin', icon: Shield, desc: 'System oversight' });
+    navItems.push({ name: 'Admin Center', path: '/admin', icon: Users, desc: 'System oversight' });
   }
 
   const roleColors = {
@@ -62,14 +63,11 @@ export default function Layout({ setAuth }) {
             const Icon = item.icon;
             const isActive = location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path));
             return (
-              <button
+              <Button
                 key={item.name}
+                variant={isActive ? "default" : "ghost"}
+                className={`w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-left transition-all duration-300 group relative overflow-hidden ${isActive ? 'shadow-2xl shadow-blue-600/40 translate-x-1' : ''}`}
                 onClick={() => navigate(item.path)}
-                className={`w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-left transition-all duration-300 group relative overflow-hidden ${
-                  isActive
-                    ? 'bg-blue-600 text-white shadow-2xl shadow-blue-600/40 translate-x-1'
-                    : 'text-slate-400 hover:bg-white/5 hover:text-white hover:translate-x-1'
-                }`}
               >
                 <div className={`shrink-0 transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}>
                   <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-slate-500'}`} />
@@ -81,7 +79,7 @@ export default function Layout({ setAuth }) {
                 {isActive && (
                   <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-blue-300 rounded-l-full"></div>
                 )}
-              </button>
+              </Button>
             );
           })}
         </nav>
@@ -103,13 +101,14 @@ export default function Layout({ setAuth }) {
               </div>
             </div>
           )}
-          <button
-            onClick={handleLogout}
+          <Button
+            variant="ghost"
             className="w-full flex items-center justify-center gap-3 py-3.5 px-4 rounded-2xl text-slate-400 bg-white/5 hover:bg-slate-800 hover:text-white transition-all duration-300 text-xs font-bold border border-white/5"
+            onClick={handleLogout}
           >
             <LogOut className="w-4 h-4" />
             Secure Logout
-          </button>
+          </Button>
         </div>
       </aside>
 
@@ -125,3 +124,4 @@ export default function Layout({ setAuth }) {
     </div>
   );
 }
+

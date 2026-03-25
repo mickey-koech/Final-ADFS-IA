@@ -7,6 +7,21 @@ import {
 } from 'lucide-react';
 import FolderTree from '../folders/FolderTree';
 import toast from 'react-hot-toast';
+import {
+  Button,
+  Card,
+  CardHeader,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  Input,
+  Label,
+  Progress,
+  Badge
+} from '@/components/ui';
 
 export default function FileExplorer() {
   const [folders, setFolders] = useState([]);
@@ -26,7 +41,8 @@ export default function FileExplorer() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState(null);
-  const [isSearching, setIsSearching] = useState(false);
+  const [isSearching, setIsSearching] = useState(false); // Used for search loading
+
 
   // Drag state
   const [isDraggingOver, setIsDraggingOver] = useState(false);
@@ -168,19 +184,20 @@ export default function FileExplorer() {
     <div className="flex gap-6 h-[calc(100vh-3rem)]">
       {/* Folder Sidebar */}
       <aside className="w-72 shrink-0 flex flex-col gap-4">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex-1 flex flex-col">
-          <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+        <Card className="overflow-hidden flex-1 flex flex-col">
+          <CardHeader className="p-4 border-b border-slate-100 flex items-center justify-between">
             <h2 className="font-bold text-slate-800 text-sm flex items-center gap-2">
               <FolderIcon className="w-4 h-4 text-blue-500" /> Folders
             </h2>
-            <button
+            <Button
+              size="icon"
+              variant="ghost"
               onClick={() => { setFolderParentId(null); setIsFolderModalOpen(true); }}
-              className="w-7 h-7 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
               title="New Root Folder"
             >
               <FolderPlus className="w-4 h-4" />
-            </button>
-          </div>
+            </Button>
+          </CardHeader>
           <div className="flex-1 overflow-y-auto p-2">
             <FolderTree
               folders={folders}
@@ -195,7 +212,7 @@ export default function FileExplorer() {
               </div>
             )}
           </div>
-        </div>
+        </Card>
       </aside>
 
       {/* File Area */}
@@ -206,9 +223,9 @@ export default function FileExplorer() {
             <h1 className="text-lg font-bold text-slate-800 flex items-center gap-2">
               {selectedFolderName || 'File Manager'}
               {selectedFolderName && (
-                <span className="text-xs font-normal text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+                <Badge variant="secondary">
                   {files.length} files
-                </span>
+                </Badge>
               )}
             </h1>
             <p className="text-slate-400 text-xs">
@@ -219,36 +236,35 @@ export default function FileExplorer() {
           {/* Search */}
           <form onSubmit={handleSearch} className="relative flex items-center">
             <Search className="absolute left-3 w-4 h-4 text-slate-400" />
-            <input
-              type="text"
+            <Input
               placeholder="Search documents by name..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-52 transition-all"
+              className="pl-9 pr-4 w-52"
             />
             {searchResults && (
-              <button type="button" onClick={() => { setSearchResults(null); setSearchQuery(''); }} className="absolute right-2 text-slate-400 hover:text-slate-600">
+              <Button type="button" onClick={() => { setSearchResults(null); setSearchQuery(''); }} className="absolute right-2 text-slate-400 hover:text-slate-600 size-sm" variant="ghost">
                 <X className="w-3.5 h-3.5" />
-              </button>
+              </Button>
             )}
           </form>
 
           {/* Actions */}
           <div className="flex items-center gap-2">
-            <button
+            <Button
+              variant="outline"
+              size="sm"
               onClick={handleUndo}
               title="Restore Last Action"
-              className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 rounded-xl text-xs font-bold transition-all border border-slate-200 shadow-sm"
             >
-              <Undo className="w-4 h-4" /> Restore
-            </button>
-            <button
+              <Undo className="w-4 h-4 mr-1" /> Restore
+            </Button>
+            <Button
               onClick={() => setIsFileUploadOpen(true)}
               disabled={!selectedFolderId}
-              className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded-xl text-xs font-semibold transition-all shadow-md shadow-blue-500/20"
             >
-              <Upload className="w-4 h-4" /> Upload File
-            </button>
+              <Upload className="w-4 h-4 mr-1" /> Upload File
+            </Button>
           </div>
         </div>
 
@@ -300,12 +316,14 @@ export default function FileExplorer() {
                         <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
                           <FileIcon className="w-5 h-5" />
                         </div>
-                        <button
+                        <Button
                           onClick={() => handleDeleteFile(f.id, f.name)}
-                          className="opacity-0 group-hover:opacity-100 w-7 h-7 flex items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-all"
+                          className="opacity-0 group-hover:opacity-100 w-7 h-7 size-sm p-0"
+                          variant="ghost"
+                          size="icon"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                        </Button>
                       </div>
                       <div className="min-w-0">
                         <h4 className="font-semibold text-slate-800 text-sm truncate" title={f.name}>{f.name}</h4>
@@ -316,9 +334,9 @@ export default function FileExplorer() {
                       {f.tags && (
                         <div className="flex flex-wrap gap-1">
                           {f.tags.split(',').filter(Boolean).map(tag => (
-                            <span key={tag} className="flex items-center gap-0.5 px-2 py-0.5 bg-blue-50 text-blue-600 text-[10px] font-semibold rounded-full">
-                              <Tag className="w-2.5 h-2.5" /> {tag.trim()}
-                            </span>
+                            <Badge key={tag} variant="secondary" className="text-[10px]">
+                              <Tag className="w-2.5 h-2.5 mr-1" /> {tag.trim()}
+                            </Badge>
                           ))}
                         </div>
                       )}
@@ -332,105 +350,89 @@ export default function FileExplorer() {
       </div>
 
       {/* Upload Modal */}
-      {isFileUploadOpen && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl border border-slate-100">
-            <div className="flex items-center justify-between mb-5">
-              <h3 className="text-xl font-bold text-slate-900 tracking-tight">Archive Document</h3>
-              <button onClick={() => setIsFileUploadOpen(false)} className="w-9 h-9 flex items-center justify-center text-slate-400 hover:bg-slate-100 rounded-xl transition-all">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <form onSubmit={handleUpload} className="space-y-4">
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">File</label>
-                <div className="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center">
-                  <input
-                    type="file"
-                    onChange={(e) => setUploadFile(e.target.files[0])}
-                    required
-                    className="w-full text-sm text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-600 file:text-xs file:font-semibold hover:file:bg-blue-100"
-                  />
-                  {uploadFile && <p className="text-xs text-green-600 mt-2 font-medium">✓ {uploadFile.name}</p>}
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  Tags <span className="text-slate-400 font-normal">(comma separated)</span>
-                </label>
+      <Dialog open={isFileUploadOpen} onOpenChange={setIsFileUploadOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Archive Document</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleUpload} className="space-y-4">
+            <div>
+              <Label>File</Label>
+              <div className="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center mt-2">
                 <input
-                  type="text"
-                  value={uploadTags}
-                  onChange={(e) => setUploadTags(e.target.value)}
-                  placeholder="e.g. Science, 2026, Exam"
-                  className="w-full px-4 py-3 border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50 transition-all font-medium"
+                  type="file"
+                  onChange={(e) => setUploadFile(e.target.files[0])}
+                  required
+                  className="w-full text-sm text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-600 file:text-xs file:font-semibold hover:file:bg-blue-100"
                 />
-                <p className="text-[11px] text-slate-400 mt-2 font-medium">Add keywords to categorize and find this document faster.</p>
+                {uploadFile && <p className="text-xs text-green-600 mt-2 font-medium">✓ {uploadFile.name}</p>}
               </div>
+            </div>
+            <div>
+              <Label>
+                Tags <span className="text-slate-400 font-normal">(comma separated)</span>
+              </Label>
+              <Input
+                value={uploadTags}
+                onChange={(e) => setUploadTags(e.target.value)}
+                placeholder="e.g. Science, 2026, Exam"
+                className="mt-2"
+              />
+              <p className="text-[11px] text-slate-400 mt-2 font-medium">Add keywords to categorize and find this document faster.</p>
+            </div>
 
-              {isUploading && (
-                <div className="bg-blue-50/50 p-4 rounded-2xl border border-blue-100/50">
-                  <div className="flex justify-between text-xs font-bold text-blue-700 mb-2 items-center">
-                    <span className="flex items-center gap-2">
-                       <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-                      </span>
-                      Organizing files...
+            {isUploading && (
+              <div className="bg-blue-50/50 p-4 rounded-2xl border border-blue-100/50">
+                <div className="flex justify-between text-xs font-bold text-blue-700 mb-2 items-center">
+                  <span className="flex items-center gap-2">
+                     <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
                     </span>
-                    <span>{uploadProgress}%</span>
-                  </div>
-                  <div className="w-full bg-blue-100/50 rounded-full h-2.5 overflow-hidden">
-                    <div
-                      className="bg-blue-600 h-full rounded-full transition-all duration-500 ease-out"
-                      style={{ width: `${uploadProgress}%` }}
-                    />
-                  </div>
+                    Organizing files...
+                  </span>
+                  <span>{uploadProgress}%</span>
                 </div>
-              )}
-
-              <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setIsFileUploadOpen(false)} className="flex-1 py-2.5 text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl text-sm font-semibold transition-colors">Cancel</button>
-                <button type="submit" disabled={isUploading} className="flex-1 py-3 text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 rounded-2xl text-sm font-bold transition-all shadow-xl shadow-blue-500/20 active:scale-[0.98]">
-                  {isUploading ? 'Finalizing...' : 'Save Document'}
-                </button>
+                <Progress value={uploadProgress} />
               </div>
-            </form>
-          </div>
-        </div>
-      )}
+            )}
+
+            <DialogFooter>
+              <Button type="button" onClick={() => setIsFileUploadOpen(false)} variant="outline">Cancel</Button>
+              <Button type="submit" disabled={isUploading}>
+                {isUploading ? 'Finalizing...' : 'Save Document'}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       {/* Create Folder Modal */}
-      {isFolderModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl border border-slate-100">
-            <div className="flex items-center justify-between mb-5">
-              <h3 className="text-lg font-bold text-slate-900">New Folder</h3>
-              <button onClick={() => setIsFolderModalOpen(false)} className="w-8 h-8 flex items-center justify-center text-slate-400 hover:bg-slate-100 rounded-lg">
-                <X className="w-4 h-4" />
-              </button>
+      <Dialog open={isFolderModalOpen} onOpenChange={setIsFolderModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>New Folder</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleCreateFolder} className="space-y-4">
+            <div>
+              <Label>Folder Name</Label>
+              <Input
+                value={newFolderName}
+                onChange={(e) => setNewFolderName(e.target.value)}
+                placeholder="e.g. Science Dept."
+                required
+                autoFocus
+                className="mt-2"
+              />
             </div>
-            <form onSubmit={handleCreateFolder} className="space-y-4">
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Folder Name</label>
-                <input
-                  type="text"
-                  value={newFolderName}
-                  onChange={(e) => setNewFolderName(e.target.value)}
-                  placeholder="e.g. Science Dept."
-                  required
-                  autoFocus
-                  className="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50"
-                />
-              </div>
-              <div className="flex gap-3 pt-1">
-                <button type="button" onClick={() => setIsFolderModalOpen(false)} className="flex-1 py-2.5 text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl text-sm font-semibold">Cancel</button>
-                <button type="submit" className="flex-1 py-2.5 text-white bg-blue-600 hover:bg-blue-700 rounded-xl text-sm font-semibold shadow-md shadow-blue-500/20">Create</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+            <DialogFooter>
+              <Button type="button" onClick={() => setIsFolderModalOpen(false)} variant="outline">Cancel</Button>
+              <Button type="submit">Create</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
+

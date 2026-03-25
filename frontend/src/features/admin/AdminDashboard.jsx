@@ -19,6 +19,7 @@ import { DepartmentActivityChart } from '../../components/admin/analytics/Depart
 import { AIInsightsPanel } from '../../components/admin/analytics/AIInsightsPanel';
 import { RecentUploadsTable } from '../../components/admin/analytics/RecentUploadsTable';
 import { ChatAnalytics } from '../../components/admin/analytics/ChatAnalytics';
+import { Badge, Button, Card, CardContent, CardHeader, CardTitle } from '../../components/ui';
 
 export default function AdminDashboard() {
   const [analytics, setAnalytics] = useState(null);
@@ -74,7 +75,7 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-10 max-w-[1600px] mx-auto pb-20">
       {/* Premium Header Container */}
-      <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-8 bg-white/40 p-10 rounded-[40px] border border-white/60 backdrop-blur-3xl shadow-2xl shadow-blue-500/5">
+      <Card className="flex flex-col xl:flex-row xl:items-end justify-between gap-8 p-10 bg-white/40 border-white/60 backdrop-blur-3xl shadow-2xl shadow-blue-500/5 rounded-[40px]">
         <div className="space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em]">
             <ShieldAlert className="w-3.5 h-3.5" />
@@ -99,17 +100,15 @@ export default function AdminDashboard() {
             <p className="text-[10px] text-slate-400 font-bold mt-1">Last Sync: {new Date().toLocaleTimeString()}</p>
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Primary KPI Grid */}
       <DashboardWidgets stats={adminStats} />
 
       {/* Main Content Layout */}
       <div className="grid grid-cols-1 2xl:grid-cols-12 gap-10">
-        
         {/* Left Column: Intelligence Feed & Activity (8 cols) */}
         <div className="2xl:col-span-8 space-y-10">
-          
           {/* Historical Analytics */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
             <UploadFrequencyChart data={analytics?.upload_activity || []} />
@@ -128,26 +127,23 @@ export default function AdminDashboard() {
 
         {/* Right Column: Alerts & Approvals (4 cols) */}
         <div className="2xl:col-span-4 space-y-10">
-          
           <RealTimeNotifications />
           
           <AIInsightsPanel insights={analytics?.ai_insights || []} />
 
           {/* Quick User Approval Queue */}
-          <div className="bg-white/80 backdrop-blur-xl rounded-[40px] border border-white shadow-xl overflow-hidden">
-            <div className="p-8 border-b border-slate-50 flex items-center justify-between">
+          <Card className="bg-white/80 backdrop-blur-xl rounded-[40px] border-white shadow-xl overflow-hidden">
+            <CardHeader className="p-8 border-b border-slate-50 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">
                   <Users className="w-6 h-6" />
                 </div>
-                <div>
-                  <h3 className="text-lg font-[1000] text-slate-900 uppercase tracking-tight">Access Requests</h3>
-                  <p className="text-xs font-bold text-slate-400">Identity verification required</p>
-                </div>
+                <CardTitle className="text-lg font-[1000] uppercase tracking-tight">Access Requests</CardTitle>
+                <p className="text-xs font-bold text-slate-400">Identity verification required</p>
               </div>
               <Badge variant="outline">{pendingUsers.length}</Badge>
-            </div>
-            <div className="p-8">
+            </CardHeader>
+            <CardContent className="p-8">
               {pendingUsers.length === 0 ? (
                 <div className="text-center py-10">
                   <p className="text-xs font-black text-slate-300 uppercase tracking-[0.2em]">Queue Empty</p>
@@ -165,20 +161,24 @@ export default function AdminDashboard() {
                           <p className="text-[10px] font-bold text-slate-400 uppercase">{user.role}</p>
                         </div>
                       </div>
-                      <button 
+                      <Button 
+                        variant="default"
+                        size="icon"
                         onClick={() => adminService.approveUser(user.id).then(() => { toast.success('Approved'); fetchAdminData(); })}
-                        className="p-3 bg-blue-600 text-white rounded-xl shadow-lg shadow-blue-500/20 hover:scale-110 active:scale-95 transition-all"
+                        className="shadow-lg shadow-blue-500/20 hover:scale-110 active:scale-95"
                       >
                          <TrendingUp className="w-4 h-4" />
-                      </button>
+                      </Button>
                     </div>
                   ))}
                 </div>
               )}
-            </div>
-          </div>
+            </CardContent>
+          </Card>
+
         </div>
       </div>
     </div>
   );
 }
+

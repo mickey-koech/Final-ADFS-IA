@@ -1,5 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-@import "tailwindcss";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 * {
   box-sizing: border-box;
@@ -65,3 +68,4 @@ body {
 .premium-shadow-hover:hover {
   box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.08), 0 8px 30px -10px rgba(0, 0, 0, 0.1);
 }
+
